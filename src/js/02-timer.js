@@ -4,13 +4,15 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import 'flatpickr/dist/flatpickr.min.css';
 const input = document.querySelector('#datetime-picker');
 const btnStart = document.querySelector('button[data-start]');
+const currentTime = Date.now();
 let dataDays = document.querySelector('span[data-days]');
 let dataHours = document.querySelector('span[data-hours]');
 let dataMinutes = document.querySelector('span[data-minutes]');
 let dataSeconds = document.querySelector('span[data-seconds]');
+
 let timerId = null;
 let startTime = Date.now();
-const currentTime = Date.now();
+
 btnStart.setAttribute('disabled', 'true');
 flatpickr(input, {
   enableTime: true,
@@ -25,9 +27,15 @@ flatpickr(input, {
 
 input.addEventListener('input', e => {
   if (new Date(e.target.value) - currentTime >= 0) {
+    input.style.border = '1px solid green';
+    btnStart.style.color = 'green';
     btnStart.removeAttribute('disabled');
+    Notify.success('Наче працює');
   } else {
-    Notify.failure('Руслан, не шкодь!');
+    input.style.border = '1px solid red';
+    btnStart.setAttribute('disabled', 'true');
+    btnStart.style.color = 'red';
+    Notify.failure('для чого? + нащо?');
   }
 });
 
@@ -42,6 +50,11 @@ const timer = {
         const deltaTime = startTime - currentTime;
         const runTime = convertMs(deltaTime);
         console.log(runTime);
+        dataDays.style.color = 'red';
+        dataHours.style.color = 'red';
+        dataMinutes.style.color = 'red';
+        dataSeconds.style.color = 'red';
+
         dataDays.innerHTML = runTime.days;
         dataHours.innerHTML = runTime.hours;
         dataMinutes.innerHTML = runTime.minutes;
@@ -60,6 +73,7 @@ btnStart.addEventListener('click', event => {
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
+
 function convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
@@ -78,3 +92,10 @@ function convertMs(ms) {
   );
   return { days, hours, minutes, seconds };
 }
+
+input.style.border = '1px solid rgba(255,255,255,.3)';
+input.style.borderRadius = '4px';
+
+btnStart.style.border = 'none';
+btnStart.style.border = '1px solid rgba(255,255,255,.3)';
+btnStart.style.borderRadius = '4px';
